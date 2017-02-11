@@ -1,0 +1,96 @@
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>
+        Cavemans SPA
+    </title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" rel="stylesheet" type="text/css">
+
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        .app-body {
+            height: 100%;
+            background-color: white !important;
+        }
+
+        .cavemansspa-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: grey;
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            animation-duration: .3s;
+            -moz-animation-duration: .3s;
+            -webkit-animation-duration: .3s;
+        }
+
+        .cavemansspa-page-last,
+        .cavemansspa-page-new {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* this can be ovrride, see settings2 component changes to green */
+        .cavemansspa-page-settings {
+            background-color: yellow;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="app-body">
+    <div class="ui middle aligned center aligned grid" style="height:100%">
+        <div class="row">
+            <div class="sixteen wide column">
+                <h1 class="ui header">
+                    Cavemans SPA
+                </h1>
+            </div>
+            <div class="sixteen wide column">
+                <p>it's so easy a caveman can do it</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+
+                <img class="ui centered image"
+                     src="/img/caveman_computer.jpg"
+                     alt="Cavemans SPA"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui inverted dimmer active">
+        <div class="ui text loader">Thinking...</div>
+    </div>
+</div>
+
+<div id="fb-root"></div>
+
+<script src="https://cdn.rawgit.com/lhorie/mithril.js/next/mithril.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.js" type="text/javascript"></script>
+<script src="https://unpkg.com/rxjs/bundles/Rx.min.js" type="text/javascript"></script>
+
+<script src="/mithril/views/Main.js" type="text/javascript"></script>
+<script src="/mithril/views/Page.js" type="text/javascript"></script>
+<script src="/mithril/views/Login.js" type="text/javascript"></script>
+
+</body>
+</html>
