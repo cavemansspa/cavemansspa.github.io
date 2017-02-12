@@ -12,7 +12,8 @@ CavemansSPA.view.Settings = {
             'settings',
             m('br'),
             m('a[href=]', {
-                onclick: function() {
+                onclick: function(e) {
+                    e.preventDefault();
                     history.back();
                 }
             }, 'prev')

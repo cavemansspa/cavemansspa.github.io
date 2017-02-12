@@ -1,24 +1,6 @@
 CavemansSPA = (function () {
 
-    console.log('CavemansSPA');
-
-    var domLoaded$ = Rx.Observable.fromEvent(document, 'DOMContentLoaded').take(1);
-
-    // Set 3 second timer for splash screen.
-    Rx.Observable.zip(domLoaded$, Rx.Observable.timer(3000)).subscribe(
-        {
-            next: function (it) {
-                console.log(it, 'next')
-            },
-            error: function () {
-                console.log('error')
-            },
-            complete: function () {
-                console.log('CavemansSPA::complete');
-                CavemansSPA.onReady()
-            }
-        }
-    )
+    console.log('Constructing CavemansSPA');
 
     return {
         view: {},

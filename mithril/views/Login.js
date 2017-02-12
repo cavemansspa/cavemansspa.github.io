@@ -15,7 +15,7 @@ CavemansSPA.view.Login = {
                 oncreate: m.route.link
             }, 'next'),
 
-            m('.ui.container', [
+            m('.ui.center.aligned.container', [
                 m('.ui.yellow.button', {onclick: this.onClickWarning}, 'warning'),
                 m('.ui.red.error.button', {onclick: this.onClickError}, 'error')
             ])
