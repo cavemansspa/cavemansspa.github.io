@@ -27,7 +27,7 @@ CavemansSPA.navigation = {
             CavemansSPA.navigation.direction = 'next';
             CavemansSPA.navigation.history.push(args.key);
         }
-        
+
         //vnode.dom.addEventListener('animationend webkitAnimationEnd', CavemansSPA.navigation.removeClasses(vnode, CavemansSPA.navigation.pageInClass()));
 
 //         console.log('direction: ', CavemansSPA.navigation.direction,
@@ -44,8 +44,12 @@ CavemansSPA.navigation = {
             })
         });
 
-        theLastPage.vnode.dom.classList.add('cavemansspa-page-last', 'animated', CavemansSPA.navigation.pageOutClass());
-        vnode.dom.classList.add('cavemansspa-page-new', 'animated', CavemansSPA.navigation.pageInClass());
+        var pageInClass = CavemansSPA.navigation.pageInClass();
+        var pageOutClass = CavemansSPA.navigation.pageOutClass();
+        setTimeout(() => {
+            theLastPage.vnode.dom.classList.add('cavemansspa-page-last', 'animated', pageOutClass)
+            vnode.dom.classList.add('cavemansspa-page-new', 'animated', pageInClass);
+        }, 0);
     }
 };
 
@@ -81,6 +85,15 @@ CavemansSPA.view.Page = function (component, args) {
             CavemansSPA.navigation.doTransition(vnode, args.pageArgs);
         },
 
+        onupdate: function (vnode) {
+            console.log('CavemansSPA.view.Page::onupdate()', vnode);
+        },
+
+
+        onremove: function (vnode) {
+            console.log('CavemansSPA.view.Page::onremove()', vnode);
+        },
+
         onbeforeremove: function (vnode) {
             console.log('CavemansSPA.view.Page::onbeforeremove()', vnode);
 
@@ -98,7 +111,9 @@ CavemansSPA.view.Page = function (component, args) {
         view: function (vnode) {
             console.log('CavemansSPA.view.Page::view()', vnode, args);
 
-            var pageArgs = _.assign({}, args.pageArgs)
+            var pageArgs = _.assign({}, args.pageArgs),
+                componentArgs = _.assign({}, args.componentArgs)
+
             return m('div.cavemansspa-page', pageArgs, [
                 'test',
                 m(component, args.componentArgs)
