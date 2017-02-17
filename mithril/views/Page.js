@@ -35,6 +35,19 @@ CavemansSPA.navigation = {
 //             ', pageOutClass: ', CavemansSPA.navigation.pageOutClass()
 //         );
 
+        var animationEndHandler = (e) => {
+            console.log('Inbound ANIMATIONEND', e.type, e, vnode.dom, e.target === vnode.dom)
+
+            e.target.classList.remove('cavemansspa-page-new', 'animated', CavemansSPA.navigation.pageInClass());
+            e.target.removeEventListener(e.type, animationEndHandler);
+            $('.cavemansspa-app-body').removeClass('cavemansspa-transition-parent')
+        }
+
+        ['animationend', 'mozAnimationEnd', 'webkitAnimationEnd'].forEach((it) => {
+            vnode.dom.addEventListener(it, animationEndHandler);
+
+        })
+
 
         var theLastPage = CavemansSPA.navigation.lastPage;
         ['animationend', 'mozAnimationEnd', 'webkitAnimationEnd'].forEach((it) => {
@@ -46,10 +59,22 @@ CavemansSPA.navigation = {
 
         var pageInClass = CavemansSPA.navigation.pageInClass();
         var pageOutClass = CavemansSPA.navigation.pageOutClass();
+        var appBodyEl = document.querySelector('.cavemansspa-app-body')
+
+        // These setTimeouts and cavemansspa-transition-parent are to get iOS Safari to paint.
         setTimeout(() => {
             theLastPage.vnode.dom.classList.add('cavemansspa-page-last', 'animated', pageOutClass)
-            vnode.dom.classList.add('cavemansspa-page-new', 'animated', pageInClass);
-        }, 0);
+            vnode.dom.classList.add('cavemansspa-page-new')
+            vnode.dom.classList.add('animated')
+            vnode.dom.classList.add(pageInClass)
+            $(vnode.dom).addClass('cavemansspa-page-new', 'animated', pageInClass);
+        }, 1);
+        setTimeout(function () {
+            appBodyEl.classList.add('cavemansspa-transition-parent')
+        }, 50)
+        setTimeout(function () {
+            appBodyEl.classList.remove('cavemansspa-transition-parent')
+        }, 100)
     }
 };
 
@@ -67,20 +92,6 @@ CavemansSPA.view.Page = function (component, args) {
                 CavemansSPA.navigation.history.push(args.pageArgs.key);
                 return;
             }
-
-            var animationEndHandler = (e) => {
-                console.log('Inbound ANIMATIONEND', e.type, e, vnode.dom, e.target === vnode.dom)
-                //e.target.classList.remove('cavemansspa-page-new', 'animated', CavemansSPA.navigation.pageInClass());
-                e.target.classList.remove('cavemansspa-page-new');
-                e.target.classList.remove('animated');
-                e.target.classList.remove(CavemansSPA.navigation.pageInClass());
-                e.target.removeEventListener(e.type, animationEndHandler);
-            }
-
-            ['animationend', 'mozAnimationEnd', 'webkitAnimationEnd'].forEach((it) => {
-                vnode.dom.addEventListener(it, animationEndHandler);
-
-            })
 
             CavemansSPA.navigation.doTransition(vnode, args.pageArgs);
         },

@@ -21,23 +21,22 @@
             width: 100%;
         }
 
-        .app-body {
+        .cavemansspa-app-body {
             height: 100%;
             width: 100%;
             background-color: white !important;
             overflow: hidden;
         }
 
-        .cavemansspa-page {
+        .cavemansspa-transition-parent {
+            overflow: auto !important;
+        }
+        .cavemansspa-transition-parent .cavemansspa-page-new,
+        .cavemansspa-transition-parent .cavemansspa-page-last {
+            overflow: auto !important;
+        }
 
-            /**/
-            perspective: 1200px;
-            transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            overflow: hidden;
-            /**/
+        .cavemansspa-page {
 
             position: absolute;
             top: 0;
@@ -47,12 +46,14 @@
 
             overflow-y: auto;
 
-            transform: translate3d(0, 0, 0);
-            -webkit-transform: translate3d(0, 0, 0);
             background-color: lightgray;
             animation-duration: .3s;
             -moz-animation-duration: .3s;
-            -webkit-animation-duration: .3s;
+            -webkit-animation-duration: 13s;
+        }
+
+        *:not(html) {
+            -webkit-transform: translate3d(0, 0, 0);
         }
 
         .cavemansspa-page-last,
@@ -62,6 +63,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
 
         /* this can be ovrride, see settings2 component changes to green */
@@ -78,7 +80,7 @@
     This is just a temporary splash screen.
     Mithril's m.route is called in Main.js's CavemansSPA.onReady() will overwrite this <div class="app-body">
 -->
-<div class="app-body">
+<div class="cavemansspa-app-body">
     <div class="ui middle aligned center aligned grid" style="height:100%">
         <div class="row">
             <div class="sixteen wide column">
