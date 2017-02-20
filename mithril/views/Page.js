@@ -8,15 +8,7 @@ CavemansSPA.navigation = {
         return (this.direction === 'next' ? 'slideOutLeft' : 'slideOutRight')
     },
     lastPage: null,
-    //removeClasses: function (vnode, className) {
-    //    return function (e) {
-    //        console.log('CavemansSPA.view.Page::removeClasses()', vnode);
-    //        vnode.dom.classList.remove('cavemansspa-page-new');
-    //        vnode.dom.classList.remove('animated');
-    //        vnode.dom.classList.remove(className);
-    //        e.target.removeEventListener(e.type, arguments.callee);
-    //    }
-    //},
+
     doTransition: function (vnode, args) {
         var lastPageHistory = _.nth(CavemansSPA.navigation.history, -2);
 
@@ -28,46 +20,35 @@ CavemansSPA.navigation = {
             CavemansSPA.navigation.history.push(args.key);
         }
 
-        //vnode.dom.addEventListener('animationend webkitAnimationEnd', CavemansSPA.navigation.removeClasses(vnode, CavemansSPA.navigation.pageInClass()));
+        var pageInClass = CavemansSPA.navigation.pageInClass(),
+            pageOutClass = CavemansSPA.navigation.pageOutClass(),
+            appBodyEl = document.querySelector('.cavemansspa-app-body');
 
-//         console.log('direction: ', CavemansSPA.navigation.direction,
-//             ', pageInClass:', CavemansSPA.navigation.pageInClass(),
-//             ', pageOutClass: ', CavemansSPA.navigation.pageOutClass()
-//         );
+        //console.log('direction: ', CavemansSPA.navigation.direction,
+        //    ', pageInClass:', CavemansSPA.navigation.pageInClass(),
+        //    ', pageOutClass: ', CavemansSPA.navigation.pageOutClass()
+        //);
 
         var animationEndHandler = (e) => {
             console.log('Inbound ANIMATIONEND', e.type, e, vnode.dom, e.target === vnode.dom)
-
             e.target.classList.remove('cavemansspa-page-new', 'animated', CavemansSPA.navigation.pageInClass());
+            appBodyEl.classList.remove('cavemansspa-transition-parent')
             e.target.removeEventListener(e.type, animationEndHandler);
-            $('.cavemansspa-app-body').removeClass('cavemansspa-transition-parent')
         }
 
-        ['animationend', 'mozAnimationEnd', 'webkitAnimationEnd'].forEach((it) => {
-            vnode.dom.addEventListener(it, animationEndHandler);
-
-        })
+        vnode.dom.addEventListener('animationend', animationEndHandler);
 
 
         var theLastPage = CavemansSPA.navigation.lastPage;
-        ['animationend', 'mozAnimationEnd', 'webkitAnimationEnd'].forEach((it) => {
-            theLastPage.vnode.dom.addEventListener(it, function (e) {
-                console.log('Outbound ANIMATIONEND', it, e, vnode.dom, e.target === vnode.dom, theLastPage)
-                theLastPage.whenDone();
-            })
-        });
+        theLastPage.vnode.dom.addEventListener('animationend', function (e) {
+            console.log('Outbound ANIMATIONEND', 'animationend', e, vnode.dom, e.target === vnode.dom, theLastPage)
+            theLastPage.whenDone();
+        })
 
-        var pageInClass = CavemansSPA.navigation.pageInClass();
-        var pageOutClass = CavemansSPA.navigation.pageOutClass();
-        var appBodyEl = document.querySelector('.cavemansspa-app-body')
-
-        // These setTimeouts and cavemansspa-transition-parent are to get iOS Safari to paint.
+        // These setTimeouts and cavemansspa-transition-parent hacks are to get iOS Safari to paint.
         setTimeout(() => {
             theLastPage.vnode.dom.classList.add('cavemansspa-page-last', 'animated', pageOutClass)
-            vnode.dom.classList.add('cavemansspa-page-new')
-            vnode.dom.classList.add('animated')
-            vnode.dom.classList.add(pageInClass)
-            $(vnode.dom).addClass('cavemansspa-page-new', 'animated', pageInClass);
+            vnode.dom.classList.add('cavemansspa-page-new', 'animated', pageInClass);
         }, 1);
         setTimeout(function () {
             appBodyEl.classList.add('cavemansspa-transition-parent')
@@ -112,11 +93,10 @@ CavemansSPA.view.Page = function (component, args) {
                 vnode: vnode,
                 key: args.pageArgs.key
             };
-            var done = new Promise(function (resolve) {
+            return new Promise(function (resolve) {
                 console.log('CavemansSPA.view.Page::onbeforeremove() -- promise', resolve);
                 CavemansSPA.navigation.lastPage.whenDone = resolve;
             });
-            return done;
         },
 
         view: function (vnode) {
