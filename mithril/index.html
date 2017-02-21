@@ -133,7 +133,7 @@
         var tagLineEl = document.querySelector('.row .column.cavemansspa-tagline')
         tagLineEl.textContent = ''
         // Goofy example...
-        Rx.Observable.zip(Rx.Observable.interval(100), Rx.Observable.from("it's so easy a caveman can do it"))
+        Rx.Observable.zip(Rx.Observable.interval(100), Rx.Observable.of("it's so easy a caveman can do it"))
                 .subscribe(
                 {
                     next: function (it) {
@@ -169,6 +169,8 @@
 <script src="/mithril/views/Page.js" type="text/javascript"></script>
 <script src="/mithril/views/Login.js" type="text/javascript"></script>
 <script src="/mithril/views/Settings.js" type="text/javascript"></script>
+<script src="/mithril/views/PageTestClosure.js" type="text/javascript"></script>
+<script src="/mithril/views/TableComponent.js" type="text/javascript"></script>
 
 </body>
 </html>

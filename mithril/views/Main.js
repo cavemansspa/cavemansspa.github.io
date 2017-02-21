@@ -42,7 +42,8 @@ CavemansSPA = (function () {
                         },
                         showNext: false
                     }
-                })
+                }),
+                '/pageTestClosure': CavemansSPA.view.PageTestClosure
             });
         }
     }
