@@ -70,3 +70,31 @@ CavemansSPA.view.Modal = (function () {
     };
 
 })();
+
+CavemansSPA.view.LoadingMask = (function () {
+
+    var parentEl,
+        args = null
+
+    return {
+
+        show: function () {
+            console.log(parentEl)
+            $(parentEl).dimmer('show')
+        },
+
+        hide: function () {
+            $(parentEl).dimmer('hide')
+        },
+
+        oncreate: function (vnode) {
+            parentEl = $(vnode.dom).parent()
+        },
+
+        view: function (vnode) {
+            return m('.ui.text.loader', (args && args.message) || 'One moment...')
+        }
+    }
+
+})();
+

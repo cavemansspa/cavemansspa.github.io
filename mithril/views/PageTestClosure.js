@@ -11,9 +11,10 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
 
     function createUser(user) {
         console.log('createUser', user)
+        CavemansSPA.view.LoadingMask.show()
         Rx.Observable.ajax({
             method: "POST",
-            url: "https://rem-rest-api.herokuapp.com/api/users",
+            url: "https://rem-adkifyhmvs.now.sh/api/users",
             crossDomain: true,
             withCredentials: true,
             body: JSON.stringify(user)
@@ -28,9 +29,11 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                 },
                 error: (error) => {
                     console.error('save$', error)
+                    CavemansSPA.view.LoadingMask.hide()
                     CavemansSPA.view.Modal.error('saveUser error', user)
                 },
                 complete: () => {
+                    CavemansSPA.view.LoadingMask.hide()
                     console.log('save$', 'complete', userData)
                     subjectUserData.next(userData)
                     m.redraw()
@@ -41,7 +44,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
 
     var oninit$ = Rx.Observable.ajax({
         method: "GET",
-        url: "https://rem-rest-api.herokuapp.com/api/users",
+        url: "https://rem-adkifyhmvs.now.sh/api/users",
         crossDomain: true,
         withCredentials: true
     })
@@ -49,6 +52,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
     return {
         oninit: (vnode) => {
             console.log('PageTest:oninit', vnode)
+            CavemansSPA.view.LoadingMask.show()
             oninit$.subscribe({
                 next: (it) => {
                     console.log(it)
@@ -56,9 +60,12 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                 },
                 error: (error) => {
                     console.error(error)
+                    CavemansSPA.view.LoadingMask.hide()
+                    CavemansSPA.view.Modal.error('Error initializing user data')
                 },
                 complete: () => {
                     console.log('complete', vnode)
+                    CavemansSPA.view.LoadingMask.hide()
                     subjectUserData.next(userData)
                     m.redraw()
                 }

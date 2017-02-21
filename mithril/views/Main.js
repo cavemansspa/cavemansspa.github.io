@@ -9,7 +9,8 @@ CavemansSPA = (function () {
 
         onReady: function () {
 
-            m.mount(document.querySelector('body div.ui.dimmer.modals.page'), CavemansSPA.view.Modal);
+            m.mount(document.querySelector('body div.ui.dimmer.modals'), CavemansSPA.view.Modal);
+            m.mount(document.querySelector('body div.ui.dimmer.loading'), CavemansSPA.view.LoadingMask);
 
             m.route(document.querySelector('body .cavemansspa-app-body'), '/login', {
                 '/login': CavemansSPA.view.Page(CavemansSPA.view.Login, {
