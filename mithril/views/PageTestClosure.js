@@ -76,14 +76,18 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
             console.log('PageTest:oncreate', vnode)
         },
         foo: {bar: 1},
+        componentScope: {},
         view: (vnode) => {
             console.log('PageTest:view', vnode)
+            var pageVnode = vnode;
+
             return m('.ui segment container', {
                     style: {height: '100%', overflow: 'auto'},
                     oninit: (vnode) => {
                         console.log('m:oninit', vnode)
                         subjectUserData.subscribe({
                             next: (it) => {
+                                $('form.form').form('clear')
                                 console.log(it, vnode)
                             }
                         })
@@ -107,9 +111,10 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                                         if (it.action === 'SELECTED') {
                                             // Just use semanti-ui form handling here.
                                             $(vnode.dom).form('set values', it.row)
+                                            _.assign(pageVnode.state.componentScope, {selected: it})
                                         }
                                     }
-                                }),
+                                })
 
                                 $(vnode.dom).form({
                                         fields: {
@@ -160,14 +165,21 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
 
                                     // Just use semantic-ui form values here.
                                     var formData = $('form.form').form('get values')
-                                    if(formData.id) {
+                                    if (formData.id) {
                                         CavemansSPA.view.Modal.warn('Sorry, update has not been implemented')
                                         return
                                     }
 
                                     createUser(formData)
                                 }
-                            }, 'Save')
+                            }, 'Save'),
+                            _.get(vnode.state, 'componentScope.selected') && m('.ui button', {
+                                onclick: (e) => {
+                                    e.preventDefault()
+                                    $('form.form').form('clear')
+                                    delete vnode.state.componentScope.selected
+                                }
+                            }, 'New')
                         ])
                     ]),
 
