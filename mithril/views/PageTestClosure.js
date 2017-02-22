@@ -7,6 +7,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
     // propagating userData to registered components.
     //
     var subjectUserData = new Rx.Subject()
+    var subjectMetaData = new Rx.Subject()
     var userData = []
 
     function createUser(user) {
@@ -86,6 +87,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                                 console.log(it, vnode)
                             }
                         })
+
                     },
                     oncreate: (vnode) => {
                         console.log('m:oncreate', vnode)
@@ -96,7 +98,19 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                     m('.ui stackable four column grid basic segment container', [
                         m('form.ui.tiny.form.segment', {
                             style: {width: '100%'},
+
                             oncreate: (vnode) => {
+
+                                subjectMetaData.subscribe({
+                                    next: (it) => {
+                                        console.log('$meta next form', it)
+                                        if (it.action === 'SELECTED') {
+                                            // Just use semanti-ui form handling here.
+                                            $(vnode.dom).form('set values', it.row)
+                                        }
+                                    }
+                                }),
+
                                 $(vnode.dom).form({
                                         fields: {
                                             firstName: {
@@ -125,6 +139,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                                 )
                             }
                         }, [
+                            m('input[hidden][name=id] ui'),
                             m('.ui.two.fields', [
                                 m('.ui field', [
                                     m('label', 'First Name'),
@@ -141,10 +156,15 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                                     e.preventDefault()
 
                                     // Just user semantic-ui validation here.
-                                    if(!($('form.form').form('is valid'))) return;
+                                    if (!($('form.form').form('is valid'))) return;
 
                                     // Just use semantic-ui form values here.
                                     var formData = $('form.form').form('get values')
+                                    if(formData.id) {
+                                        CavemansSPA.view.Modal.warn('Sorry, update has not been implemented')
+                                        return
+                                    }
+
                                     createUser(formData)
                                 }
                             }, 'Save')
@@ -155,14 +175,14 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                         m('.ui column',
                             m('', 'Orginal Data'),
                             m(CavemansSPA.view.TableComponent, {
-                                pageScope: {crud$: subjectUserData},
+                                pageScope: {crud$: subjectUserData, meta$: subjectMetaData},
                                 componentArgs: {color: 'teal'}
                             })
                         ),
                         m('.ui column',
                             m('', 'Sorted by First Name, Last Name'),
                             m(CavemansSPA.view.TableComponent, {
-                                pageScope: {crud$: subjectUserData},
+                                pageScope: {crud$: subjectUserData, meta$: subjectMetaData},
                                 componentArgs: {
                                     sortBy: [(it) => it.firstName.toUpperCase(), (it) => it.lastName.toUpperCase()],
                                     color: 'blue'
@@ -172,7 +192,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                         m('.ui column',
                             m('', 'Sorted by Last Name'),
                             m(CavemansSPA.view.TableComponent, {
-                                pageScope: {crud$: subjectUserData},
+                                pageScope: {crud$: subjectUserData, meta$: subjectMetaData},
                                 componentArgs: {
                                     sortBy: [(it) => {
                                         return it.lastName.toUpperCase()
@@ -183,7 +203,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                         m('.ui column',
                             m('', 'Sorted by Id Descending, Id > 5'),
                             m(CavemansSPA.view.TableComponent, {
-                                pageScope: {crud$: subjectUserData},
+                                pageScope: {crud$: subjectUserData, meta$: subjectMetaData},
                                 componentArgs: {
                                     sortBy: ['id'],
                                     sortDir: ['desc'],

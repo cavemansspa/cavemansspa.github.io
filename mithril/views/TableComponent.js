@@ -9,22 +9,47 @@ CavemansSPA.view.TableComponent = {
         )
     },
 
-    vnodeRow: function (dataArray) {
+    vnodeRow: function (componentScope, meta$) {
+
+        var dataArray = componentScope.data,
+            selectedRow = componentScope.selected || {row:{id:null}}
 
         return m('tbody',
             dataArray.map((row) => {
+                
+                var trAttrs = {
+                        onclick: (e) => {
+                            meta$.next({action: 'SELECTED', row: row})
+                        }
+                    }
+                if (row.id === selectedRow.row.id) {
+                    _.assign(trAttrs, {style: {backgroundColor: 'rgba(152, 251, 152, 0.15)'}})
+                }
+                
                 var tdVnodes = _.map(['id', 'firstName', 'lastName'], (columnName) => {
                     return m('td', row[columnName])
                 })
-                return m('tr', tdVnodes)
+                return m('tr', trAttrs, tdVnodes)
             })
         )
     },
 
     oninit: function (vnode) {
         vnode.state.columnNames = ['Id', 'First Name', 'Last Name']
-        var crud$ = vnode.attrs.pageScope.crud$
+
+        var crud$ = vnode.attrs.pageScope.crud$,
+            meta$ = vnode.attrs.pageScope.meta$
+
         _.assign(vnode.state, {componentScope: {data: []}})
+
+        meta$.subscribe({
+            next: (it) => {
+                console.log('$meta next', it)
+                if(it.action === 'SELECTED') {
+                    _.assign(vnode.state.componentScope, {selected: it})
+                }
+            }
+        })
 
         // Here we'll get notified when the page level data has been modified with a CRUD operation
         crud$.subscribe({
@@ -48,7 +73,7 @@ CavemansSPA.view.TableComponent = {
     view: function (vnode) {
         return m('table.ui very compact striped celled table', {class: vnode.attrs.componentArgs.color}, [
             this.vnodeHeader(vnode.state.columnNames),
-            this.vnodeRow(vnode.state.componentScope.data)
+            this.vnodeRow(vnode.state.componentScope, vnode.attrs.pageScope.meta$)
         ])
     }
 
