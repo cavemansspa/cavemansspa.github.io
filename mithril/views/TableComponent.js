@@ -12,7 +12,8 @@ CavemansSPA.view.TableComponent = {
     vnodeRow: function (componentScope, meta$) {
 
         var dataArray = componentScope.data,
-            selectedRow = componentScope.selected || {row:{id:null}}
+            selectedRow = componentScope.selected || {row:{id:null}},
+            createdRow = componentScope.created || {row:{id:null}}
 
         return m('tbody',
             dataArray.map((row) => {
@@ -24,6 +25,17 @@ CavemansSPA.view.TableComponent = {
                     }
                 if (row.id === selectedRow.row.id) {
                     _.assign(trAttrs, {style: {backgroundColor: 'rgba(152, 251, 152, 0.15)'}})
+                }
+
+                if (row.id === createdRow.row.id) {
+                    _.assign(trAttrs, {
+                        class: 'animated slideInRight',
+                        onanimationend: (e) => {
+                            console.log('onanimationend before', componentScope)
+                            delete componentScope.created
+                            console.log('onanimationend after', componentScope)
+                        }
+                    })
                 }
                 
                 var tdVnodes = _.map(['id', 'firstName', 'lastName'], (columnName) => {
@@ -40,14 +52,19 @@ CavemansSPA.view.TableComponent = {
         var crud$ = vnode.attrs.pageScope.crud$,
             meta$ = vnode.attrs.pageScope.meta$
 
-        _.assign(vnode.state, {componentScope: {data: []}})
+        _.assign(vnode.state, {pageScope: {data: []}, componentScope: {data: []}})
 
-        meta$.subscribe({
+        meta$.filter((it) => {return it.action === 'SELECTED'}).subscribe({
             next: (it) => {
                 console.log('$meta next', it)
-                if(it.action === 'SELECTED') {
-                    _.assign(vnode.state.componentScope, {selected: it})
-                }
+                _.assign(vnode.state.componentScope, {selected: it})
+            }
+        })
+        meta$.filter((it) => {return it.action === 'CREATED'}).subscribe({
+            next: (it) => {
+                console.log('$meta next', it)
+                _.assign(vnode.state.componentScope, {selected: it})
+                _.assign(vnode.state.componentScope, {created: it})
             }
         })
 
@@ -59,8 +76,8 @@ CavemansSPA.view.TableComponent = {
                     filterBy = vnode.attrs.componentArgs.filterBy || null
 
                 console.log('CavemansSPA.view.TableComponent::crud$.next', it)
-                _.assign(vnode.state, {pageScope: {data: it.data}})
-                _.assign(vnode.state, {componentScope: {data: it.data}})
+                _.assign(vnode.state.pageScope, {data: it.data})
+                _.assign(vnode.state.componentScope, {data: it.data})
                 if (sortBy) vnode.state.componentScope.data = _.orderBy(it.data, sortBy, sortDir)
                 if (filterBy) vnode.state.componentScope.data = _.filter(vnode.state.componentScope.data, filterBy)
             },
