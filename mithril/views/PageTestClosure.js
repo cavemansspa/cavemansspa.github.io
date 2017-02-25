@@ -26,7 +26,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                 next: (it) => {
                     console.log('save$', it)
                     userData.data.push({
-                        id: it.response.id,
+                        id: Number(it.response.id),
                         firstName: it.response.firstName,
                         lastName: it.response.lastName
                     })
@@ -44,6 +44,42 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
                 complete: () => {
                     CavemansSPA.view.LoadingMask.hide()
                     console.log('save$', 'complete', userData)
+                    subjectUserData.next(userData)
+
+                    m.redraw()
+                }
+            }
+        )
+    }
+
+    function deleteUser(user) {
+        user.id = Number(user.id)
+        console.log('deleteUser()', user)
+        CavemansSPA.view.LoadingMask.show()
+        Rx.Observable.ajax({
+            method: "DELETE",
+            url: "https://rem-adkifyhmvs.now.sh/api/users/" + user.id,
+            crossDomain: true,
+            withCredentials: true,
+            headers: {'Content-Type': 'application/json'},
+        }).subscribe({
+                next: (it) => {
+                    console.log('deleteUser()', 'next', it)
+                    _.remove(userData.data, (row) => row.id === user.id )
+                    subjectMetaData.next({
+                        action: 'DELETED',
+                        type: 'user',
+                        row: user
+                    })
+                },
+                error: (error) => {
+                    console.error('deleteUser()', 'error', error)
+                    CavemansSPA.view.LoadingMask.hide()
+                    CavemansSPA.view.Modal.error('deleteUser error', user)
+                },
+                complete: () => {
+                    CavemansSPA.view.LoadingMask.hide()
+                    console.log('deleteUser()', 'complete', userData)
                     subjectUserData.next(userData)
 
                     m.redraw()
@@ -99,7 +135,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
 
                     m('.ui stackable four column grid basic segment container', [
                         m(CavemansSPA.view.FormComponent, {
-                            pageScope: {crud$: subjectUserData, meta$: subjectMetaData, createUser: createUser},
+                            pageScope: {crud$: subjectUserData, meta$: subjectMetaData, createUser: createUser, deleteUser: deleteUser},
                             componentArgs: { }
                         }),
                     ]),

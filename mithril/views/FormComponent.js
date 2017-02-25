@@ -51,7 +51,6 @@ CavemansSPA.view.FormComponent = {
                     }
                 },
                 inline: true,
-                on: 'blur',
                 onSuccess: function (e) {
                     e.preventDefault();
                 }
@@ -100,7 +99,21 @@ CavemansSPA.view.FormComponent = {
                     $(vnode.dom).form('clear')
                     delete vnode.state.componentScope.selected
                 }
-            }, 'New')
+            }, 'New'),
+            _.get(vnode.state, 'componentScope.selected') && m('.ui red button', {
+                onclick: (e) => {
+                    e.preventDefault()
+
+                    // Just user semantic-ui validation here.
+                    if (!($(vnode.dom).form('is valid'))) return;
+
+                    // Just use semantic-ui form values here.
+                    var formData = $(vnode.dom).form('get values')
+
+                    vnode.attrs.pageScope.deleteUser(formData)
+                }
+            }, 'Delete')
+
         ])
     }
 

@@ -13,12 +13,18 @@ CavemansSPA.view.TableComponent = {
 
         var dataArray = componentScope.data,
             selectedRow = componentScope.selected || {row:{id:null}},
-            createdRow = componentScope.created || {row:{id:null}}
+            createdRow = componentScope.created || {row:{id:null}},
+            deletedRow = componentScope.deleted || {row:{id:null}}
+
+        if(deletedRow.row.id) {
+            dataArray = componentScope.preDeletedDataArray
+        }
 
         return m('tbody',
             dataArray.map((row) => {
                 
                 var trAttrs = {
+                        key: row.id,
                         onclick: (e) => {
                             meta$.next({action: 'SELECTED', row: row})
                         }
@@ -37,7 +43,19 @@ CavemansSPA.view.TableComponent = {
                         }
                     })
                 }
-                
+                if (row.id === deletedRow.row.id) {
+                    _.assign(trAttrs, {
+                        style: {backgroundColor: 'rgba(255, 0, 0, 0.15)'},
+                        class: 'animated slideOutLeft',
+                        onanimationend: (e) => {
+                            console.log('onanimationend delete before', componentScope)
+                            delete componentScope.deleted
+                            delete componentScope.preDeletedDataArray
+                            console.log('onanimationend delete after', componentScope)
+                        }
+                    })
+                }
+
                 var tdVnodes = _.map(['id', 'firstName', 'lastName'], (columnName) => {
                     return m('td', row[columnName])
                 })
@@ -67,6 +85,12 @@ CavemansSPA.view.TableComponent = {
                 _.assign(vnode.state.componentScope, {created: it})
             }
         })
+        meta$.filter((it) => {return it.action === 'DELETED'}).subscribe({
+            next: (it) => {
+                console.log('$meta next', it)
+                _.assign(vnode.state.componentScope, {deleted: it, preDeletedDataArray: vnode.state.componentScope.data})
+            }
+        })
 
         // Here we'll get notified when the page level data has been modified with a CRUD operation
         crud$.subscribe({
@@ -75,7 +99,7 @@ CavemansSPA.view.TableComponent = {
                     sortDir = vnode.attrs.componentArgs.sortDir || ['asc'],
                     filterBy = vnode.attrs.componentArgs.filterBy || null
 
-                console.log('CavemansSPA.view.TableComponent::crud$.next', it)
+                console.log('CavemansSPA.view.TableComponent::crud$.next', vnode.state, it)
                 _.assign(vnode.state.pageScope, {data: it.data})
                 _.assign(vnode.state.componentScope, {data: it.data})
                 if (sortBy) vnode.state.componentScope.data = _.orderBy(it.data, sortBy, sortDir)
