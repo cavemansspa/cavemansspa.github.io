@@ -17,9 +17,8 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
         CavemansSPA.view.LoadingMask.show()
         Rx.Observable.ajax({
             method: "POST",
-            url: "https://rem-adkifyhmvs.now.sh/api/users",
+            url: "https://rem-xcanjvogzd.now.sh/api/users",
             crossDomain: true,
-            withCredentials: true,
             headers: {'Content-Type': 'application/json'},
             body: user
         }).subscribe({
@@ -58,7 +57,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
         CavemansSPA.view.LoadingMask.show()
         Rx.Observable.ajax({
             method: "DELETE",
-            url: "https://rem-adkifyhmvs.now.sh/api/users/" + user.id,
+            url: "https://rem-xcanjvogzd.now.sh/api/users/" + user.id,
             crossDomain: true,
             withCredentials: true,
             headers: {'Content-Type': 'application/json'},
@@ -90,7 +89,7 @@ CavemansSPA.view.PageTestClosure = function PageTestClosure(vnode) {
 
     var oninit$ = Rx.Observable.ajax({
         method: "GET",
-        url: "https://rem-adkifyhmvs.now.sh/api/users",
+        url: "https://rem-xcanjvogzd.now.sh/api/users",
         crossDomain: true,
         withCredentials: true
     })
