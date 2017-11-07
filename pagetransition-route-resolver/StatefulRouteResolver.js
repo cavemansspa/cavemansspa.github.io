@@ -1,4 +1,3 @@
-
 function StatefulRouteResolver(config) {
 
     const routeHistory = [], onRender = config.onrender;
@@ -13,6 +12,7 @@ function StatefulRouteResolver(config) {
             onmatch: function (args, requestedPath) {
                 var outboundPath = m.route.get()
                     , outboundComponent = outboundPath ? routeResolvers[outboundPath].baseComponent : undefined
+                    , outboundResolver = outboundPath ? routeResolvers[outboundPath] : undefined
                     , inboundComponent = it.baseComponent;
 
                 console.log('omatch', args, {requestedPath: requestedPath, outboundPath: outboundPath})
@@ -25,15 +25,16 @@ function StatefulRouteResolver(config) {
                 }
 
                 if (routeHistory.length > 1 && requestedPath === routeHistory[routeHistory.length - 1 - 1]) {
-                        console.log('direction is back')
-                        resolver.direction = 1
-                        routeHistory.pop()
-                    } else {
-                        console.log('direction is forward')
-                        resolver.direction = -1
-                        routeHistory.push(requestedPath)
-                    }
-                
+                    console.log('direction is back')
+                    resolver.direction = 1
+                    routeHistory.pop()
+                } else {
+                    console.log('direction is forward')
+                    outboundResolver.scrollTop = outboundResolver.scrollableEl ? outboundResolver.scrollableEl.scrollTop : 0
+                    resolver.direction = -1
+                    routeHistory.push(requestedPath)
+                }
+
 
                 // If we are moving forward, the next screen is off viewport to the right,
                 // and slides in from the right moving to the left.

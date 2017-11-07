@@ -4,11 +4,6 @@ CavemansSPA.Home = {
         vnode.state.resolver = vnode.attrs.resolver
         console.log('CavemansSPA.Home::oninit', {vnode: vnode})
     },
-    onbeforeremove: function (vnode) {
-        console.log('CavemansSPA.Home::onbeforeremove', {vnode: vnode, scrollTop: vnode.dom.scrollTop})
-        console.log(vnode.state.scrollableEl.scrollTop)
-        vnode.state.resolver.scrollTop = vnode.state.scrollableEl.scrollTop
-    },
 
     view: function (vnode) {
         var items = []
@@ -30,7 +25,7 @@ CavemansSPA.Home = {
                             vnode: vnode, scrollTop: vnode.dom.scrollTop
                         }
                     )
-                    parentState.scrollableEl = vnode.dom
+                    parentState.resolver.scrollableEl = vnode.dom
                     vnode.dom.scrollTop = parentState.resolver.scrollTop || 0
                 },
                 style: {height: '100%', overflow: 'auto'}
