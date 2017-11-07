@@ -9,14 +9,18 @@ CavemansSPA.PageTransition = {
                 style: {
                     display: 'inline-block',
                     width: '100%',
-                    'vertical-align': 'top'
+                    'vertical-align': 'top',
+                    padding: 0,
+                    margin: 0,
+                    height: '100vh',
+                    overflow: 'hidden'
                 }
             }
 
             return m(CavemansSPA.PageTransition, {
                 resolver: resolver
             }, resolver.components.map(function (it) {
-                return m('li', styleLI, m(it))
+                return m('li', styleLI, m(it, {resolver: resolver}))
             }))
         }
     },
@@ -32,11 +36,14 @@ CavemansSPA.PageTransition = {
                     style: {
                         listStyle: 'none',
                         padding: 0,
+                        margin: 0,
+                        height: '100vh',
+                        //overflow: 'hidden',
                         whiteSpace: 'nowrap'
                     }
                 }
 
-            var attrs = Object.assign({}, styleUL),
+            var attrs = Object.assign({class: 'page-transition'}, styleUL),
                 resolver = vnode.attrs.resolver
 
             if (resolver.components.length > 1) {
