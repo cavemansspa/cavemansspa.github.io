@@ -1,6 +1,8 @@
 function StatefulRouteResolver(config) {
 
-    const routeHistory = [], onRender = config.onrender;
+    const routeHistory = [],
+        onRender = config.onrender;
+
     const routeResolvers = config.routes.reduce(function (obj, it) {
 
         var resolver = {
@@ -10,21 +12,24 @@ function StatefulRouteResolver(config) {
             baseComponent: it.baseComponent,
 
             onmatch: function (args, requestedPath) {
-                var outboundPath = m.route.get()
-                    , outboundComponent = outboundPath ? routeResolvers[outboundPath].baseComponent : undefined
-                    , outboundResolver = outboundPath ? routeResolvers[outboundPath] : undefined
-                    , inboundComponent = it.baseComponent;
+                var outboundPath = m.route.get(),
+                    historyLength = routeHistory.length,
+                    lastRoute = historyLength > 0 ? routeHistory[historyLength - 1] : undefined,
+                    lastRouteKey = lastRoute ? lastRoute.routeKey : undefined,
+                    outboundComponent = lastRouteKey ? routeResolvers[lastRouteKey].baseComponent : undefined,
+                    outboundResolver = lastRouteKey ? routeResolvers[lastRouteKey] : undefined,
+                    inboundComponent = it.baseComponent;
 
                 console.log('omatch', args, {requestedPath: requestedPath, outboundPath: outboundPath})
 
                 // If they're the same component, return inboundComponent
                 if (!outboundComponent || outboundComponent === inboundComponent) {
-                    routeHistory.push(requestedPath)
+                    routeHistory.push({routeKey: it.path, requestedPath: requestedPath})
                     resolver.components = [inboundComponent]
                     return
                 }
 
-                if (routeHistory.length > 1 && requestedPath === routeHistory[routeHistory.length - 1 - 1]) {
+                if (historyLength > 1 && requestedPath === routeHistory[historyLength - 1 - 1].requestedPath) {
                     console.log('direction is back')
                     resolver.direction = 1
                     routeHistory.pop()
@@ -32,7 +37,7 @@ function StatefulRouteResolver(config) {
                     console.log('direction is forward')
                     outboundResolver.scrollTop = outboundResolver.scrollableEl ? outboundResolver.scrollableEl.scrollTop : 0
                     resolver.direction = -1
-                    routeHistory.push(requestedPath)
+                    routeHistory.push({routeKey: it.path, requestedPath: requestedPath})
                 }
 
 
