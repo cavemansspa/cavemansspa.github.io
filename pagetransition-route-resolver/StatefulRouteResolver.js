@@ -22,19 +22,19 @@ function StatefulRouteResolver(config) {
 
                 console.log('omatch', args, {requestedPath: requestedPath, outboundPath: outboundPath})
 
-                // If they're the same component, return inboundComponent
-                if (!outboundComponent || outboundComponent === inboundComponent) {
+                // If we are starting, return inboundComponent
+                if (!outboundComponent) { // || outboundComponent === inboundComponent) {
                     routeHistory.push({routeKey: it.path, requestedPath: requestedPath})
-                    resolver.components = [inboundComponent]
+                    resolver.components = [{key: it.path, component: inboundComponent}]
                     return
                 }
 
                 if (historyLength > 1 && requestedPath === routeHistory[historyLength - 1 - 1].requestedPath) {
-                    console.log('direction is back')
+                    console.log('direction is back', 1)
                     resolver.direction = 1
                     routeHistory.pop()
                 } else {
-                    console.log('direction is forward')
+                    console.log('direction is forward', -1)
                     outboundResolver.scrollTop = outboundResolver.scrollableEl ? outboundResolver.scrollableEl.scrollTop : 0
                     resolver.direction = -1
                     routeHistory.push({routeKey: it.path, requestedPath: requestedPath})
@@ -47,9 +47,10 @@ function StatefulRouteResolver(config) {
                 // If we are moving backwards, the next screen is off viewport to the left,
                 // and slides in from the left moving to the right.
                 resolver.components = (resolver.direction === -1
-                    ? [outboundComponent, inboundComponent]
-                    : [inboundComponent, outboundComponent]).filter(function (it) {
-                    return it
+                    ? [{key: lastRouteKey, component: outboundComponent}, {key: it.path, component: inboundComponent}]
+                    : [{key: it.path, component: inboundComponent}, {key: lastRouteKey, component: outboundComponent}])
+                    .filter(function (it) {
+                        return it.component
                 })
 
             },
