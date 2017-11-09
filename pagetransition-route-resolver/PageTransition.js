@@ -18,7 +18,7 @@ CavemansSPA.PageTransition = {
                     'vertical-align': 'top',
                     padding: 0,
                     margin: 0,
-                    height: '100vh',
+                    height: '100%',
                     overflow: 'hidden'
                 }
             }
@@ -33,7 +33,7 @@ CavemansSPA.PageTransition = {
                     listStyle: 'none',
                     padding: 0,
                     margin: 0,
-                    height: '100vh',
+                    height: '100%',
                     //overflow: 'hidden',
                     whiteSpace: 'nowrap'
                 }
