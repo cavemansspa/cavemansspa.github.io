@@ -10,12 +10,19 @@ CavemansSPA.Home = {
         for (var i = 0; i < 100; i++) {
             items.push(m('', 'item ' + i))
         }
-        return [
+        return m('', {
+            style: {
+                display: 'flex',
+                'flex-direction': 'column',
+                height: '100%'
+            },
+        }, [
             //m(Menu),
-            m("h1", "Home"),
-            m("a[href=/page1]", {oncreate: m.route.link}, "/page1"),
-            m('.scrollable-element', applyAttrs(vnode), items)
-        ]
+            m("h1", {style: {flex: '0 0 auto'}}, "Home"),
+            m("a[href=/page1]", {style: {flex: '0 0 auto'}, oncreate: m.route.link}, "/page1"),
+            m('.scrollable-element', applyAttrs(vnode), items),
+            m("input[type=text]", {style: {flex: '0 0 auto'}}, "Home"),
+        ])
 
         function applyAttrs(_vnode) {
             let parentState = _vnode.state
@@ -28,7 +35,7 @@ CavemansSPA.Home = {
                     parentState.resolver.scrollableEl = vnode.dom
                     vnode.dom.scrollTop = parentState.resolver.scrollTop || 0
                 },
-                style: {height: '100%', overflow: 'auto'}
+                style: {flex: '1 1 auto', overflow: 'auto', '-webkit-overflow-scrolling': 'touch'}
             })
         }
     }

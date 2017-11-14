@@ -1,7 +1,7 @@
 function StatefulRouteResolver(config) {
 
-    const routeHistory = [],
-        onRender = config.onrender;
+    var routeHistory = [],
+        onRender = config.onrender;        
 
     const routeResolvers = config.routes.reduce(function (obj, it) {
 
@@ -27,6 +27,11 @@ function StatefulRouteResolver(config) {
                     routeHistory.push({routeKey: it.path, requestedPath: requestedPath})
                     resolver.components = [{key: it.path, component: inboundComponent}]
                     return
+                }
+
+                if(outboundPath === requestedPath) {
+                    resolver.components = [{key: it.path, component: inboundComponent}]
+                    return                   
                 }
 
                 if (historyLength > 1 && requestedPath === routeHistory[historyLength - 1 - 1].requestedPath) {
@@ -64,7 +69,9 @@ function StatefulRouteResolver(config) {
         obj[it.path] = resolver
         return obj
 
-    }, {})
+    }, {
+      resetHistory: function() {routeHistory = []},
+    })
 
     return routeResolvers;
 }
