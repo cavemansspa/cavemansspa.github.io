@@ -51,6 +51,7 @@ CavemansSPA.PageTransition = {
                         transform: 'translate3d(-100%, 0, 0)',
                         transition: 'transform .5s'
                     })
+                    attrs.class += ' in-transition'
 
                 // If we are going back, the next screen is off viewport to the left,
                 // and slides in from the left moving to the right.
@@ -68,10 +69,12 @@ CavemansSPA.PageTransition = {
                         transform: 'translate3d(0, 0, 0)',
                         transition: 'transform .5s',
                     })
+                    attrs.class += ' in-transition'
                 }
 
                 attrs.ontransitionend = function (e) {
                     console.log('transition end', resolver, attrs)
+                    attrs.class = 'page-transition'
                     if (resolver.direction === -1) {
                         resolver.components = [resolver.components[1]]
                     } else {

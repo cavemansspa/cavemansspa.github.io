@@ -27,15 +27,45 @@ CavemansSPA.Home = {
         function applyAttrs(_vnode) {
             let parentState = _vnode.state
             return Object.assign({}, {
+
                 oncreate: function (vnode) {
                     console.log('CavemansSPA.scrollable-element::oncreate', {
-                            vnode: vnode, scrollTop: vnode.dom.scrollTop
+                        vnode: vnode,
+                        'vnode.dom.scrollTop': vnode.dom.scrollTop,
+                        'parentState.resolver.scrollTop': parentState.resolver.scrollTop
                         }
                     )
+
                     parentState.resolver.scrollableEl = vnode.dom
                     vnode.dom.scrollTop = parentState.resolver.scrollTop || 0
                 },
-                style: {flex: '1 1 auto', overflow: 'auto', '-webkit-overflow-scrolling': 'touch'}
+
+                onscroll: function (e) {
+                    e.redraw = false
+                    console.log('CavemansSPA.scrollable-element::onscroll', {
+                            e: e,
+                            'e.target.scrollTop': e.target.scrollTop,
+                            vnode: vnode,
+                            'vnode.dom.scrollTop': vnode.dom.scrollTop,
+                            'parentState.resolver.scrollTop': parentState.resolver.scrollTop
+                        }
+                    )
+                },
+
+                onupdate: function (vnode) {
+                    console.log('CavemansSPA.scrollable-element::onupdate', {
+                            vnode: vnode,
+                            'vnode.dom.scrollTop': vnode.dom.scrollTop,
+                            'parentState.resolver.scrollTop': parentState.resolver.scrollTop
+                        }
+                    )
+                    vnode.dom.scrollTop = parentState.resolver.scrollTop || 0
+                },
+
+                style: {
+                    flex: '1 1 auto', 
+                    overflow: 'auto',
+                }
             })
         }
     }

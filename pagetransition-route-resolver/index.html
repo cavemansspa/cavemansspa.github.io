@@ -26,13 +26,22 @@
             opacity: 1;
             transition: opacity .25s;
         }
+
+        .cavemansspa-app.cavemansspa-route ul.page-transition li .scrollable-element {
+            background-color: yellow;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cavemansspa-app.cavemansspa-route ul.page-transition.in-transition li .scrollable-element {
+            background-color: greenyellow;
+            overflow-y: hidden !important;
+            -webkit-overflow-scrolling: auto;
+        }
+
     </style>
 </head>
 
 <body style="overflow-y: hidden">
-<div class="cavemansspa-app cavemansspa-header"></div>
-<div class="cavemansspa-app cavemansspa-route"></div>
-<div class="cavemansspa-app cavemansspa-footer"></div>
 
 <script>
     const CavemansSPA = {
@@ -53,6 +62,8 @@
                 style: {
                     display: "grid",
                     height: "100%",
+                    width: "100%",
+                    overflow: "hidden",
                     "grid-gap": "3px 3px",
                     "grid-template-columns": "1fr 1fr 1fr",
                     "grid-template-rows": "50px auto 50px"
@@ -68,7 +79,8 @@
                     style: {
                         "background-color": "rgb(239, 239, 239)",
                         'grid-column': '1 / 4',
-                        "overflow-y": "auto"
+                        "overflow-y": "auto",
+                        "overflow-x": "hidden"
                     }
                 }),
                 m(".cavemansspa-app.cavemansspa-footer", {
