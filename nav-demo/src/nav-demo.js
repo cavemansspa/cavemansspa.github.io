@@ -236,7 +236,8 @@ m.nav(document.body, '/', {
           m('div', m(m.route.Link, {href: "/bar"}, '/bar')),
           m('div', m(m.route.Link, {href: "/list"}, '/list')),
           m('div', m(m.route.Link, {href: "/redirect"}, '/redirect')),
-          m('div', m(m.route.Link, {href: "/testauth"}, '/testauth'))
+          m('div', m(m.route.Link, {href: "/testauth"}, '/testauth')),
+          m('div', m(m.route.Link, {href: "/nested"}, '/nested'))
         ])
       ]
     }
@@ -391,7 +392,21 @@ m.nav(document.body, '/', {
         ]
       }
     }
-  }
+  },
+  "/nested": (function () {
+    let layoutComponent = {view: ({children}) => [m('div', 'sublayout')].concat(children)}
+    return {
+      "": {
+        render: () => m(layoutComponent, [
+          m('div', 'this is /nested'),
+          m('div', m(m.route.Link, {href: "/nested/a"}, '/nested/a')),
+          m('div', m(m.route.Link, {href: "/nested/b"}, '/nested/b'))
+        ])
+      },
+      "/a": {render: () => m(layoutComponent, m('div', 'this is /nested/a'))},
+      "/b": {render: () => m(layoutComponent, m('div', 'this is /nested/b'))}
+    }
+  })()
 
 }, {
   layoutComponent: Layout
